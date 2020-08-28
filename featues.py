@@ -1,8 +1,9 @@
-
 import pyeeg
 # import numpy
 # from load_data import delta_TP9, prepare_data
 from numpy.random import randn
+import matplotlib.pyplot as plt
+from hurst import compute_Hc, random_walk
 
 # delta=[]
 # delta_TP9_new=int(delta_TP9 *10000000)
@@ -15,46 +16,63 @@ data = [float(k) for k in tmp]
 
 # frequencies
 band = [0.5, 4, 7, 12, 30]
+a=randn(4097)
+hur = compute_Hc(data, kind='price', simplified=True)
 
-ap_entropy = pyeeg.ap_entropy(data, 5, 1)
-bin = bin_power(data, band, 256)
+
+# def average_signal_val():
+#     return sum(data) / len(data) in range(1, 100)
+
+
+approximate = pyeeg.ap_entropy(data, 5, 1)
 DFA = pyeeg.dfa(data)
-embed_seq = pyeeg.embed_seq(data, 1, 1)
+
+# embed_seq = pyeeg.embed_seq(data, 1, 1)
 first_order_diff = [data[i] - data[i - 1] for i in range(1, len(data))]
 fisher_info = pyeeg.fisher_info(data, 1, 1, W=None)
+
 # embed_seq = embed_seq(data)
 hfd = pyeeg.hfd(data, 6)
-hjord = pyeeg.hjorth(data, D=None)
-hurst = pyeeg.hurst(data)
+hjorth = pyeeg.hjorth(data, D=None)
+
+# Compute the Hurst exponent of X. If the output H=0.5,the behavior of the time-series is similar to random walk.
+# #If H<0.5, the time-series cover less “distance” than a random walk, vice verse.
+hurst = pyeeg.hurst(a)
 PFD = pyeeg.pfd(data)
-Ellipsis = pyeeg.pfd(data)
-sam_ent = pyeeg.samp_entropy(data, 1,2 )
+sam_ent = pyeeg.samp_entropy(data, 1, 2)
 spectral_entropy = spectral_entropy(data, band, 256, Power_Ratio=None)
 svd = pyeeg.svd_entropy(data, 6, 4, W=None)
 PSI = pyeeg.bin_power(data, band, 256)
 
-a = randn(4096)
-A = pyeeg.hurst(a)
-
-
-def average():
-    return sum(first_order_diff) / len(first_order_diff) * 0000000.1
-
-
-print("average = ", average())
+# print("average = ", average())
 # numpy.savetxt('apen.txt', apen)
 
-print("ap_endropy = ", ap_entropy)
+
+# Power Spectral Intensity (PSI) and Relative Intensity Ratio (RIR) Two 1- D v ec t o rs
 print("bin_power = ", bin)
-print("DFA = ", DFA)
-print("embed_seq", embed_seq)
-print("first_order_diff = ", first_order_diff)
-print("fisher_info", fisher_info)
-print("Hurst_Exponent = ", A)
+# Petrosian Fractal Dimension (PFD) Ascalar
 print("PFD = ", PFD)
-print("Ellipsis = ", Ellipsis)
+# Higuchi Fractal Dimension (HFD) Ascalar
+print("hfd = ", hfd)
+# Hjorth mobility and complexity Two s c a la rs
+print("hjorth = ", hjorth)
+# Spectral Entropy (Shannon’s entropy of RIRs) Ascalar
 print("spectral_entropy = ", spectral_entropy)
-print("approx entrophy = ", ap_entropy)
+# SVD Entropy Ascalar
+print("svd = ", svd)
+# Fisher Information Ascalar
+print("fisher_info = ", fisher_info)
+# Approximate Entropy (ApEn) Ascalar
+print("approx entrophy = ", approximate)
+# Detrended Fluctuation Analysis (DFA) Ascalar
+print("DFA = ", DFA)
+# HurstExponent(Hurst) Ascalar
+print("Hurst_Exponent = ", hurst)
+# Build a set of embedding sequences from given time series X with lag Tau and embedding dimension
+# print("embed_seq = ", embed_seq)
+# Compute the first order difference of a time series.
+# print("first_order_diff = ", first_order_diff)
+
 
 print('end')
 # print(len(DFA[22]['data']))
