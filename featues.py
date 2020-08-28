@@ -1,23 +1,25 @@
 import pyeeg
-# import numpy
+import numpy as np
 # from load_data import delta_TP9, prepare_data
 from numpy.random import randn
 import matplotlib.pyplot as plt
+from scipy.interpolate import make_interp_spline, BSpline, interpolate
 from hurst import compute_Hc, random_walk
 
 # delta=[]
 # delta_TP9_new=int(delta_TP9 *10000000)
 # numpy.savetxt('delta.txt', delta_TP9_int, delimiter='\n')
+from load_timestamp import time
 from pyeeg import bin_power, spectral_entropy
 
-fid = open('delta_int.txt', 'r')
+fid = open('delta_int3.txt', 'r')
 tmp = fid.readlines()
 data = [float(k) for k in tmp]
 
 # frequencies
 band = [0.5, 4, 7, 12, 30]
-a=randn(4097)
-hur = compute_Hc(data, kind='price', simplified=True)
+a = randn(4097)
+# Evaluate Hurst equation
 
 
 # def average_signal_val():
@@ -73,6 +75,11 @@ print("Hurst_Exponent = ", hurst)
 # Compute the first order difference of a time series.
 # print("first_order_diff = ", first_order_diff)
 
+# Plot
+val = tmp
+
+plt.plot(val)
+plt.show()
 
 print('end')
 # print(len(DFA[22]['data']))

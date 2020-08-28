@@ -1,4 +1,7 @@
+import numpy
+
 from helpers import load_dataset
+import matplotlib.pyplot as plt
 
 # dataset = load_dataset('study_data_windowed/study_data_windowed_muse_30_s.gzip.pkl')
 
@@ -52,15 +55,21 @@ for participant_id, participant_all_data in dataset.items():
         #     participant_data[signal]
         # delta_TP9 = participant_data['Delta_TP9']
 
-# delta_TP9 = dataset[22]['data'][0]['Delta_TP9'].tolist()
+delta_TP9 = dataset[22]['data'][0]['Delta_TP9'].tolist()
 
-# data_TP9_int = [int(i * 10000000) for i in delta_TP9]
-# numpy.savetxt('delta_int.txt', data_TP9_int, delimiter='\n', fmt='%f')
+# multiplied_list = [element * 100000000 for element in delta_TP9]
+# numpy.savetxt('delta_int3.txt', multiplied_list, delimiter='\n', fmt='%i')
 
 # delta_int = delta_TP9 * 100000000
 
 # numpy.savetxt('delta_int.txt', delta_int, delimiter='\n', fmt='%.7f')
 
+plt.plot(delta_TP9)
+plt.grid()
+plt.xlabel('sample [number]')
+plt.ylabel('brainwaves [Bels]')
+plt.title('Delta_TP9 participant 22')
+plt.show()
 
 # Hurst_Exponent = pyeeg.hurst(dataset)
 # PFD = pyeeg.pfd(dataset)
