@@ -1,12 +1,13 @@
+
 import pyeeg
 # import numpy
 # from load_data import delta_TP9, prepare_data
-from pyeeg import spectral_entropy, bin_power, hjorth
 from numpy.random import randn
 
 # delta=[]
 # delta_TP9_new=int(delta_TP9 *10000000)
 # numpy.savetxt('delta.txt', delta_TP9_int, delimiter='\n')
+from pyeeg import bin_power, spectral_entropy
 
 fid = open('delta_int.txt', 'r')
 tmp = fid.readlines()
