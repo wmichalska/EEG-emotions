@@ -52,11 +52,16 @@ for participant_id, participant_all_data in dataset.items():
         for signal_name in signals_list:
             participant_data[signal_name] = pd.Series(participant_data[signal_name]).interpolate(method='polynomial', order=2).to_numpy().tolist()
         structured_dataset['data'].append(participant_data)
-        # for signal_name, signal_data in participant_data.items():
 
-        # for signal in signals_list:
-        #     participant_data[signal]
-        # delta_TP9 = participant_data['Delta_TP9']
+
+# for signal_sample in structured_dataset['data']:
+#     for signal_sample_name , signal_sample_value in signal_sample.items():
+
+
+
+# for signal in signals_list:
+# participant_data[signal]
+# delta_TP9 = participant_data['Delta_TP9']
 
 # # interpolate existing data
 # for data in structured_dataset.data:
@@ -87,10 +92,5 @@ print("done")
 # delta_int = delta_TP9 * 100000000
 
 # numpy.savetxt('delta_int.txt', delta_int, delimiter='\n', fmt='%.7f')
-
-
-# Hurst_Exponent = pyeeg.hurst(dataset)
-# PFD = pyeeg.pfd(dataset)
-# Ellipsis = pyeeg.pfd(dataset[22])
 
 # print(delta_TP9)
