@@ -21,18 +21,16 @@ from hurst import compute_Hc, random_walk
 # k: int
 # data = [float(k) for k in tmp]
 # data_int = tmp.astype(int)
+data = structured_dataset['data'][0]['Delta_TP9']
 
+# data0 = structured_dataset['data'][0]['Delta_TP9']
+# data1 = structured_dataset['data'][0]['Delta_TP10']
+# data2 = structured_dataset['data'][0]['Delta_AF7']
+# data3 = structured_dataset['data'][0]['Delta_AF8']
 
-data0 = structured_dataset['data'][0]['Delta_TP9']
-data1 = structured_dataset['data'][0]['Delta_TP10']
-data2 = structured_dataset['data'][0]['Delta_AF7']
-data3 = structured_dataset['data'][0]['Delta_AF8']
-
-all_signals = {[data0], [data1], [data2], [data3]}
+# all_signals = {[data0], [data1], [data2], [data3]}
 
 # for item in all_signals:
-
-
 # frequencies
 band = [0.5, 4, 7, 12, 30]
 
@@ -45,6 +43,9 @@ fisher_info = pyeeg.fisher_info(data, 1, 1, W=None)
 embed_seq = pyeeg.embed_seq(data, 1, 1)
 hfd = pyeeg.hfd(data, 6)
 hjorth = pyeeg.hjorth(data, D=None)
+
+# Compute the Hurst exponent of X. If the output H=0.5,the behavior of the time-series is similar to random walk.
+# #If H<0.5, the time-series cover less “distance” than a random walk, vice verse.
 hurst = pyeeg.hurst(a)
 PFD = pyeeg.pfd(data)
 sam_ent = pyeeg.samp_entropy(data, 1, 2)
