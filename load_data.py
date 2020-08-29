@@ -1,11 +1,10 @@
 import numpy
 from numpy.matlib import randn
 from pandas import date_range, Series
-
+import math
 from helpers import load_dataset
 import matplotlib.pyplot as plt
-
-# dataset = load_dataset('study_data_windowed/study_data_windowed_muse_30_s.gzip.pkl')
+import pandas as pd
 
 frequency = ["Alpha", "Beta", "Gamma", "Delta", "Theta"]
 electrode = ["AF7", "AF8", "TP9", "TP10"]
@@ -16,7 +15,6 @@ electrode = ["AF7", "AF8", "TP9", "TP10"]
 def prepare_data():
     dataset_raw = load_dataset('study_data_windowed/study_data_windowed_muse_30_s.gzip.pkl')
 
-    # prepare data - remove inimportant aptributes
     for n in range(22, 65):
         for m in range(0, 11):
             del dataset_raw[n]['data'][m]['time_stamp']
@@ -47,9 +45,12 @@ signals_list = list(dataset[22]['data'][0].keys())
 
 structured_dataset = {'data': [], 'label': []}
 
-# divide all elestrodes and bands for all participants
+# divide all electrodes and bands for all participants
 for participant_id, participant_all_data in dataset.items():
     for participant_data in participant_all_data['data']:
+        # interpolation is done in below loop
+        for signal_name in signals_list:
+            participant_data[signal_name] = pd.Series(participant_data[signal_name]).interpolate(method='polynomial', order=2).to_numpy().tolist()
         structured_dataset['data'].append(participant_data)
         # for signal_name, signal_data in participant_data.items():
 
@@ -57,43 +58,39 @@ for participant_id, participant_all_data in dataset.items():
         #     participant_data[signal]
         # delta_TP9 = participant_data['Delta_TP9']
 
-all_delta_1_1 = structured_dataset['data'][0]['Delta_TP9'].tolist()
-all_delta_1_2 = structured_dataset['data'][1]['Delta_TP9'].tolist()
-all_delta_1_3 = structured_dataset['data'][2]['Delta_TP9'].tolist()
-all_delta_1_4 = structured_dataset['data'][3]['Delta_TP9'].tolist()
-all_delta_1_5 = structured_dataset['data'][4]['Delta_TP9'].tolist()
-print("Lengh of all delta for 1st person for 1st movie = ", len(all_delta_1_1))
-print("Lengh of all delta for 1st person for 2st movie = ", len(all_delta_1_2))
-print("Lengh of all delta for 1st person for 3st movie = ", len(all_delta_1_3))
-print("Lengh of all delta for 1st person for 4st movie = ", len(all_delta_1_4))
-print("Lengh of all delta for 1st person for 5st movie = ", len(all_delta_1_5))
+# # interpolate existing data
+# for data in structured_dataset.data:
+#     data
+#
 
 # delta_TP9 = dataset[22]['data'][0]['Delta_TP9'].tolist()
+# for k in range(0, 474):
+#     signals_list_raw_delta_tp9 = structured_dataset['data'][k]['Delta_TP9']
+#     signals_list_raw_delta_tp10 = structured_dataset['data'][k]['Delta_TP10']
+#     signals_list_raw_delta_af7 = structured_dataset['data'][k]['Delta_AF7']
+#
 
-# multiplied_list = [element * 100000000 for element in delta_TP9]
-# numpy.savetxt('delta_int3.txt', multiplied_list, delimiter='\n', fmt='%i')
+# signals_list_raw = [[]]
+
+# for signal_name in signals_list:
+#     single_signal = []
+#     for t in range(0, 472):
+#         single_signal.append(structured_dataset['data'][t][signal_name].tolist())
+#     signals_list_raw.append(single_signal)
+
+# df = pd.DataFrame({'tp9': signals_list_raw[1][0]}).interpolate().values.tolist()
+# signals_list_raw[1][0] =
+
+print("done")
+# numpy.savetxt('delta_int4.txt', new_list, delimiter='\n', fmt='%i')
 
 # delta_int = delta_TP9 * 100000000
 
 # numpy.savetxt('delta_int.txt', delta_int, delimiter='\n', fmt='%.7f')
 
 
-plt.plot(all_delta_1_1, label='1st')
-plt.plot(all_delta_1_2, label='2st')
-plt.plot(all_delta_1_3, label='3st')
-plt.plot(all_delta_1_4, label='4st')
-plt.plot(all_delta_1_5, label='5st')
-
-plt.grid()
-plt.xlabel('sample [number]')
-plt.ylabel('brainwaves [Bels]')
-plt.title('Delta_TP9 participant 22')
-plt.legend()
-plt.show()
-
 # Hurst_Exponent = pyeeg.hurst(dataset)
 # PFD = pyeeg.pfd(dataset)
 # Ellipsis = pyeeg.pfd(dataset[22])
 
 # print(delta_TP9)
-print('nope')
