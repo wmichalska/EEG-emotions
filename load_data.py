@@ -1,4 +1,6 @@
 import numpy
+from numpy.matlib import randn
+from pandas import date_range, Series
 
 from helpers import load_dataset
 import matplotlib.pyplot as plt
@@ -55,7 +57,18 @@ for participant_id, participant_all_data in dataset.items():
         #     participant_data[signal]
         # delta_TP9 = participant_data['Delta_TP9']
 
-delta_TP9 = dataset[22]['data'][0]['Delta_TP9'].tolist()
+all_delta_1_1 = structured_dataset['data'][0]['Delta_TP9'].tolist()
+all_delta_1_2 = structured_dataset['data'][1]['Delta_TP9'].tolist()
+all_delta_1_3 = structured_dataset['data'][2]['Delta_TP9'].tolist()
+all_delta_1_4 = structured_dataset['data'][3]['Delta_TP9'].tolist()
+all_delta_1_5 = structured_dataset['data'][4]['Delta_TP9'].tolist()
+print("Lengh of all delta for 1st person for 1st movie = ", len(all_delta_1_1))
+print("Lengh of all delta for 1st person for 2st movie = ", len(all_delta_1_2))
+print("Lengh of all delta for 1st person for 3st movie = ", len(all_delta_1_3))
+print("Lengh of all delta for 1st person for 4st movie = ", len(all_delta_1_4))
+print("Lengh of all delta for 1st person for 5st movie = ", len(all_delta_1_5))
+
+# delta_TP9 = dataset[22]['data'][0]['Delta_TP9'].tolist()
 
 # multiplied_list = [element * 100000000 for element in delta_TP9]
 # numpy.savetxt('delta_int3.txt', multiplied_list, delimiter='\n', fmt='%i')
@@ -64,11 +77,18 @@ delta_TP9 = dataset[22]['data'][0]['Delta_TP9'].tolist()
 
 # numpy.savetxt('delta_int.txt', delta_int, delimiter='\n', fmt='%.7f')
 
-plt.plot(delta_TP9)
+
+plt.plot(all_delta_1_1, label='1st')
+plt.plot(all_delta_1_2, label='2st')
+plt.plot(all_delta_1_3, label='3st')
+plt.plot(all_delta_1_4, label='4st')
+plt.plot(all_delta_1_5, label='5st')
+
 plt.grid()
 plt.xlabel('sample [number]')
 plt.ylabel('brainwaves [Bels]')
 plt.title('Delta_TP9 participant 22')
+plt.legend()
 plt.show()
 
 # Hurst_Exponent = pyeeg.hurst(dataset)

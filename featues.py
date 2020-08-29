@@ -51,7 +51,7 @@ PSI = pyeeg.bin_power(data, band, 256)
 
 
 # Power Spectral Intensity (PSI) and Relative Intensity Ratio (RIR) Two 1- D v ec t o rs
-print("bin_power = ", bin)
+print("bin_power = ", PSI)
 # Petrosian Fractal Dimension (PFD) Ascalar
 print("PFD = ", PFD)
 # Higuchi Fractal Dimension (HFD) Ascalar
