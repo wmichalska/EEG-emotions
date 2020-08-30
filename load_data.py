@@ -42,21 +42,32 @@ dataset = prepare_data()
 
 # get all signal lst names
 signals_list = list(dataset[22]['data'][0].keys())
+all_emotions = list(dataset[22]['assessments'][0]['emotions'].keys())
+assessment_types = list(dataset[22]['assessments'][0].keys())
+sam_list = list(dataset[22]['assessments'][0]['sam'].keys())
 
+structured_features = {}
 structured_dataset = {'data': [], 'label': []}
 
 # divide all electrodes and bands for all participants
 for participant_id, participant_all_data in dataset.items():
     for participant_data in participant_all_data['data']:
         # interpolation is done in below loop
-        for signal_name in signals_list:
-            participant_data[signal_name] = pd.Series(participant_data[signal_name]).interpolate(method='polynomial', order=2).to_numpy().tolist()
+        # for signal_name in signals_list:
+        #     participant_data[signal_name] = pd.Series(participant_data[signal_name]).interpolate(method='polynomial',
+        #                                                                                          order=2).to_numpy().tolist()
         structured_dataset['data'].append(participant_data)
+        # structured_dataset['label'].append()
 
+for participant_id, participant_all_data in dataset.items():
+    for participant_data in participant_all_data['assessments']:
+        structured_dataset['label'].append(participant_data)
+
+
+features_list = {' f1': [], 'f2': [], 'f3': []}
 
 # for signal_sample in structured_dataset['data']:
 #     for signal_sample_name , signal_sample_value in signal_sample.items():
-
 
 
 # for signal in signals_list:
