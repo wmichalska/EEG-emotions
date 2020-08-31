@@ -1,5 +1,6 @@
 import gzip
 import pickle
+import numpy as np
 
 
 def load_dataset(path):
@@ -127,27 +128,34 @@ print('1')
 valid_dataset_ids = [0, 11, 22, 33]
 
 for i in range(0, 473):
-    for signal_name in signals_list:
+    # for signal_name in signals_list:
         # print(extract_signal_feature_value(whole_dataset, i, signal_name, 'DFA'))
-        structured_features['DFA'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'DFA'))
-        structured_features['fisher_info'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'fisher_info'))
-        structured_features['embed_seq'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'embed_seq'))
-        structured_features['hfd'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hfd'))
-        structured_features['hjorth'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hjorth'))
-        structured_features['hurst'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hurst'))
-        structured_features['PFD'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'PFD'))
-        structured_features['sam_ent'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'sam_ent'))
-        structured_features['spectral_entropy'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'spectral_entropy'))
-        structured_features['svd'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'svd'))
-        structured_features['PSI'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'PSI'))
-        structured_features['first_order_diff'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'first_order_diff'))
+    structured_features['DFA'].append(extract_signal_feature_value(whole_dataset, i, 'Delta_TP9', 'DFA'))
+    structured_features['fisher_info'].append(
+        extract_signal_feature_value(whole_dataset, i, 'Delta_TP9', 'fisher_info'))
+    # structured_features['embed_seq'].append(
+    #     extract_signal_feature_value(whole_dataset, i, signal_name, 'embed_seq'))
+    # structured_features['hfd'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hfd'))
+    # structured_features['hjorth'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hjorth'))
+    # structured_features['hurst'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hurst'))
+    # structured_features['PFD'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'PFD'))
+    # structured_features['sam_ent'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'sam_ent'))
+    # structured_features['spectral_entropy'].append(
+    #     extract_signal_feature_value(whole_dataset, i, signal_name, 'spectral_entropy'))
+    # structured_features['svd'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'svd'))
+    # structured_features['PSI'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'PSI'))
+    # structured_features['first_order_diff'].append(
+    #     extract_signal_feature_value(whole_dataset, i, signal_name, 'first_order_diff'))
     # filename = "structured_features.p.gz"
     # with gzip.open(filename, 'wb') as f:
     #     pickle.dump(structured_features, f)
-        print('Sample', i, signal_name, 'saved to structured file')
+    #     print('Sample', i, signal_name, 'saved to structured file')
+
+list_of_DFA = structured_features['DFA']
+list_of_fisher_info = structured_features['fisher_info']
+
+DFA_variance = np.nanvar(list_of_DFA)
+fisher_info_variance = np.nanvar(list_of_fisher_info)
+print(DFA_variance, fisher_info_variance)
 
 print('end')
