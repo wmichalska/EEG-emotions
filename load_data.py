@@ -1,16 +1,12 @@
-import numpy
-from numpy.matlib import randn
-from pandas import date_range, Series
-import math
+from multiprocessing import Process, Manager
+from features import calculate_features
 from helpers import load_dataset
-import matplotlib.pyplot as plt
 import pandas as pd
+from datetime import datetime
+import gzip
+import pickle
 
-frequency = ["Alpha", "Beta", "Gamma", "Delta", "Theta"]
-electrode = ["AF7", "AF8", "TP9", "TP10"]
-
-
-# print(frequency,  electrode)
+structured_dataset = {'data': [], 'label': [], 'features': []}
 
 def prepare_data():
     dataset_raw = load_dataset('study_data_windowed/study_data_windowed_muse_30_s.gzip.pkl')
@@ -38,70 +34,76 @@ def prepare_data():
     return dataset_raw
 
 
-dataset = prepare_data()
-
-# get all signal lst names
-signals_list = list(dataset[22]['data'][0].keys())
-all_emotions = list(dataset[22]['assessments'][0]['emotions'].keys())
-assessment_types = list(dataset[22]['assessments'][0].keys())
-sam_list = list(dataset[22]['assessments'][0]['sam'].keys())
-
-structured_features = {}
-structured_dataset = {'data': [], 'label': []}
-
-# divide all electrodes and bands for all participants
-for participant_id, participant_all_data in dataset.items():
-    for participant_data in participant_all_data['data']:
-        # interpolation is done in below loop
-        # for signal_name in signals_list:
-        #     participant_data[signal_name] = pd.Series(participant_data[signal_name]).interpolate(method='polynomial',
-        #                                                                                          order=2).to_numpy().tolist()
-        structured_dataset['data'].append(participant_data)
-        # structured_dataset['label'].append()
-
-for participant_id, participant_all_data in dataset.items():
-    for participant_data in participant_all_data['assessments']:
-        structured_dataset['label'].append(participant_data)
+def worker_job(data, list_to_append, signals_list):
+    for signal_name in signals_list:
+        list_to_append.append({signal_name: calculate_features(data[signal_name])})
+        print("calculated ", signal_name, datetime.now().time())
 
 
-features_list = {' f1': [], 'f2': [], 'f3': []}
+def main():
+    frequency = ["Alpha", "Beta", "Gamma", "Delta", "Theta"]
+    electrode = ["AF7", "AF8", "TP9", "TP10"]
 
-# for signal_sample in structured_dataset['data']:
-#     for signal_sample_name , signal_sample_value in signal_sample.items():
+    manager = Manager()
+
+    dataset = prepare_data()
+
+    # get all signal list names
+    signals_list = list(dataset[22]['data'][0].keys())
+    all_emotions = list(dataset[22]['assessments'][0]['emotions'].keys())
+    assessment_types = list(dataset[22]['assessments'][0].keys())
+    sam_list = list(dataset[22]['assessments'][0]['sam'].keys())
+
+    # divide all electrodes and bands for all participants
+    for participant_id, participant_all_data in dataset.items():
+        for participant_data in participant_all_data['data']:
+            # interpolation is done in below loop
+            for signal_name in signals_list:
+                participant_data[signal_name] = pd.Series(participant_data[signal_name]).interpolate(
+                    method='polynomial',
+                    order=2).to_numpy().tolist()
+            structured_dataset['data'].append(participant_data)
+
+    for participant_id, participant_all_data in dataset.items():
+        for participant_data in participant_all_data['assessments']:
+            structured_dataset['label'].append(participant_data)
+
+    # jobs = []
+    # # calculate features
+    # for i, data in enumerate(structured_dataset['data']):
+    #     structured_dataset['features'].append(manager.list())
+    #     p = Process(target=worker_job, args=(data, structured_dataset['features'][i], signals_list))
+    #     print("created thread")
+    #     jobs.append(p)
+    #     p.start()
+    #     # structured_dataset['features'][i].append({signal_name: calculate_features(data[signal_name])})
+    #
+    # for job in jobs:
+    #     print("joining thread!")
+    #     job.join()
+    ######################################################################
+
+    # calculate features
+    for i, data in enumerate(structured_dataset['data']):
+        structured_dataset['features'].append([])
+        for signal_name in signals_list:
+            structured_dataset['features'][i].append({signal_name: calculate_features(data[signal_name])})
+            print("calculated ", signal_name, datetime.now().time())
+        print("done i=", i)
+
+        filename = "features" + str(i) + ".p.gz"
+        with gzip.open(filename, 'wb') as f:
+            pickle.dump(structured_dataset['features'][i], f)
+            print("saved file i=", i)
+
+    filename = "whole_dataset.p.gz"
+    with gzip.open(filename, 'wb') as f:
+        pickle.dump(structured_dataset, f)
+
+    # calculate_features(structured_dataset['data'][80]['Delta_TP9'])
+
+    print("done")
 
 
-# for signal in signals_list:
-# participant_data[signal]
-# delta_TP9 = participant_data['Delta_TP9']
-
-# # interpolate existing data
-# for data in structured_dataset.data:
-#     data
-#
-
-# delta_TP9 = dataset[22]['data'][0]['Delta_TP9'].tolist()
-# for k in range(0, 474):
-#     signals_list_raw_delta_tp9 = structured_dataset['data'][k]['Delta_TP9']
-#     signals_list_raw_delta_tp10 = structured_dataset['data'][k]['Delta_TP10']
-#     signals_list_raw_delta_af7 = structured_dataset['data'][k]['Delta_AF7']
-#
-
-# signals_list_raw = [[]]
-
-# for signal_name in signals_list:
-#     single_signal = []
-#     for t in range(0, 472):
-#         single_signal.append(structured_dataset['data'][t][signal_name].tolist())
-#     signals_list_raw.append(single_signal)
-
-# df = pd.DataFrame({'tp9': signals_list_raw[1][0]}).interpolate().values.tolist()
-# signals_list_raw[1][0] =
-
-print("done")
-# numpy.savetxt('delta_int4.txt', new_list, delimiter='\n', fmt='%i')
-
-# delta_int = delta_TP9 * 100000000
-
-# numpy.savetxt('delta_int.txt', delta_int, delimiter='\n', fmt='%.7f')
-
-# print(delta_TP9)
+if __name__ == "__main__":
+    main()
