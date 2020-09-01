@@ -116,47 +116,67 @@ def extract_signal_feature_value(dataset, dataset_id, signal_name, feature_name)
 whole_dataset = load_dataset('whole_dataset.p.gz')
 signals_list = list(whole_dataset['data'][0].keys())
 
-structured_features = {'approximate': [], 'DFA': [], 'fisher_info': [], 'embed_seq': [], 'hfd': [],
+structured_features = {'DFA': [], 'hfd': [],
                        'hjorth': [],
-                       'hurst': [], 'PFD': [], 'sam_ent': [], 'spectral_entropy': [], 'svd': [],
-                       'PSI': [],
-                       'first_order_diff': []}
+                       'PFD': [], 'sam_ent': [], 'spectral_entropy': [], 'svd': [],
+                       'PSI': []}
 
 # signal_features = {'id': [], 'signal_name': [], 'feature_name': [], 'feature_value': []}
 print('1')
 
-valid_dataset_ids = [0, 11, 22, 33]
-
 for i in range(0, 473):
     for signal_name in signals_list:
-        structured_features['DFA'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'DFA'))
-        structured_features['fisher_info'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'fisher_info'))
-        structured_features['embed_seq'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'embed_seq'))
-        structured_features['hfd'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hfd'))
-        structured_features['hjorth'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hjorth'))
-        structured_features['hurst'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hurst'))
-        structured_features['PFD'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'PFD'))
-        structured_features['sam_ent'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'sam_ent'))
+        structured_features['DFA'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'DFA'))  # ok
+        # structured_features['fisher_info'].append(
+        #     extract_signal_feature_value(whole_dataset, i, signal_name, 'fisher_info')) # zeros
+        # structured_features['embed_seq'].append(
+        #     extract_signal_feature_value(whole_dataset, i, signal_name, 'embed_seq')) # PREPROCESS sequence od 6600 elements
+        structured_features['hfd'].append(
+            extract_signal_feature_value(whole_dataset, i, signal_name, 'hfd'))  # some elements < 0
+        structured_features['hjorth'].append(
+            extract_signal_feature_value(whole_dataset, i, signal_name, 'hjorth'))  # tuple of 2 elements
+        # structured_features['hurst'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'hurst')) #nan
+        structured_features['PFD'].append(
+            extract_signal_feature_value(whole_dataset, i, signal_name, 'PFD'))  # some elemets  = 1
+        structured_features['sam_ent'].append(
+            extract_signal_feature_value(whole_dataset, i, signal_name, 'sam_ent'))  # most elements 0.00003xx
         structured_features['spectral_entropy'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'spectral_entropy'))
-        structured_features['svd'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'svd'))
-        structured_features['PSI'].append(extract_signal_feature_value(whole_dataset, i, signal_name, 'PSI'))
-        structured_features['first_order_diff'].append(
-            extract_signal_feature_value(whole_dataset, i, signal_name, 'first_order_diff'))
-    print('Sample', i, signal_name, 'saved to structured file')
+            extract_signal_feature_value(whole_dataset, i, signal_name, 'spectral_entropy'))  # ok, most =0.5 +- 0.1
+        structured_features['svd'].append(
+            extract_signal_feature_value(whole_dataset, i, signal_name, 'svd'))  # ok, most elements 0.2-0.5
+        structured_features['PSI'].append(extract_signal_feature_value(whole_dataset, i, signal_name,
+                                                                       'PSI'))  # every element is a tuple of 2 arrays of 4 values
+        # structured_features['first_order_diff'].append(
+        # extract_signal_feature_value(whole_dataset, i, signal_name, 'first_order_diff')) # PREPROCESS every 16 element diff than 0
+    # print('Sample', i, signal_name, 'saved to structured file')
 
-filename = "structured_features.p.gz"
-with gzip.open(filename, 'wb') as f:
-    pickle.dump(structured_features, f)
-    print('ALL Samples saved to structured file')
+# filename = "structured_features.p.gz"
+# with gzip.open(filename, 'wb') as f:
+#     pickle.dump(structured_features, f)
+#     print('ALL Samples saved to structured file')
+
 
 list_of_DFA = structured_features['DFA']
-list_of_fisher_info = structured_features['fisher_info']
+list_of_hfd = structured_features['hfd']
+list_of_hjorth = structured_features['hjorth']  # 2 elements
+list_of_PFD = structured_features['PFD']
+list_of_sam_ent = structured_features['sam_ent']
+list_of_spectral_entropy = structured_features['spectral_entropy']
+list_of_svd = structured_features['svd']
+list_of_PSI = structured_features['PSI']  # tuple of 2 lists with 4 elements
 
-DFA_variance = np.nanvar(list_of_DFA)
-fisher_info_variance = np.nanvar(list_of_fisher_info)
-print(DFA_variance, fisher_info_variance)
+DFA_chunks = [list_of_DFA[x:x + 473] for x in range(0, len(list_of_DFA), 473)]
+hfd_chunks = [list_of_hfd[x:x + 473] for x in range(0, len(list_of_hfd), 473)]
+PFD_chunks = [list_of_PFD[x:x + 473] for x in range(0, len(list_of_PFD), 473)]
+sam_ent_chunks = [list_of_sam_ent[x:x + 473] for x in range(0, len(list_of_sam_ent), 473)]
+spectral_entropy_chunks = [list_of_spectral_entropy[x:x + 473] for x in range(0, len(list_of_spectral_entropy), 473)]
+svd_chunks = [list_of_svd[x:x + 473] for x in range(0, len(list_of_svd), 473)]
+
+variances = {'DFA':[], 'hfd': [], }
+
+for i in range(0, 20):
+    DFA_variance = np.nanvar(DFA_chunks[i])
+    print(DFA_variance)
+    variances['DFA'].append(DFA_variance)
 
 print('end')
