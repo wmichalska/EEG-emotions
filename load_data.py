@@ -84,21 +84,21 @@ def main():
     ######################################################################
 
     # calculate features
-    for i, data in enumerate(structured_dataset['data']):
-        structured_dataset['features'].append([])
-        for signal_name in signals_list:
-            structured_dataset['features'][i].append({signal_name: calculate_features(data[signal_name])})
-            print("calculated ", signal_name, datetime.now().time())
-        print("done i=", i)
-
-        filename = "features" + str(i) + ".p.gz"
-        with gzip.open(filename, 'wb') as f:
-            pickle.dump(structured_dataset['features'][i], f)
-            print("saved file i=", i)
-
-    filename = "whole_dataset.p.gz"
-    with gzip.open(filename, 'wb') as f:
-        pickle.dump(structured_dataset, f)
+    # for i, data in enumerate(structured_dataset['data']):
+    #     structured_dataset['features'].append([])
+    #     for signal_name in signals_list:
+    #         structured_dataset['features'][i].append({signal_name: calculate_features(data[signal_name])})
+    #         print("calculated ", signal_name, datetime.now().time())
+    #     print("done i=", i)
+    #
+    #     filename = "features" + str(i) + ".p.gz"
+    #     with gzip.open(filename, 'wb') as f:
+    #         pickle.dump(structured_dataset['features'][i], f)
+    #         print("saved file i=", i)
+    #
+    # filename = "whole_dataset.p.gz"
+    # with gzip.open(filename, 'wb') as f:
+    #     pickle.dump(structured_dataset, f)
 
     # calculate_features(structured_dataset['data'][80]['Delta_TP9'])
 

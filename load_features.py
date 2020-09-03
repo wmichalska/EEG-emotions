@@ -179,4 +179,6 @@ for i in range(0, 20):
     print(DFA_variance)
     variances['DFA'].append(DFA_variance)
 
+
+
 print('end')
