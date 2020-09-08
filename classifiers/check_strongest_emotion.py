@@ -9,6 +9,6 @@ emotions_with_titles = pd.read_csv('updated_9class.csv')
 
 new = emotions_with_titles[(emotions_with_titles['Max'] >= 3)]
 print(new)
-new.to_csv('nine.csv', index = False, header=False)
+# new.to_csv('nine.csv', index = False, header=False)
 
 print('end')

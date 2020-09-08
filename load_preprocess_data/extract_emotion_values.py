@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 
-structured_dataset = {'label': [], 'AWE' :[], 'DISGUST':[], 'SURPRISE':[], 'ANGER':[], 'ENTHUSIASM':[], 'LIKING':[], 'FEAR':[], 'AMUSEMENT':[], 'SADNESS':[]}
+structured_dataset = {'label': [], 'STIMULANT':[], 'AWE' :[], 'DISGUST':[], 'SURPRISE':[], 'ANGER':[], 'ENTHUSIASM':[], 'LIKING':[], 'FEAR':[], 'AMUSEMENT':[], 'SADNESS':[]}
 
 
 def load_dataset(path):
@@ -13,7 +13,7 @@ def load_dataset(path):
     return dataset
 
 def prepare_data():
-    dataset_raw = load_dataset('../study_data_windowed/study_data_windowed_muse_30_s.gzip.pkl')
+    dataset_raw = load_dataset('../new_assessment/study_data_windowed_muse_30_s.gzip.pkl')
 
     for n in range(22, 65):
             del dataset_raw[n]['data']
@@ -42,6 +42,7 @@ for i in range(0, 451):
     structured_dataset['FEAR'].append(structured_dataset['label'][i]['emotions']['FEAR'])  # ok
     structured_dataset['AMUSEMENT'].append(structured_dataset['label'][i]['emotions']['AMUSEMENT'])  # ok
     structured_dataset['SADNESS'].append(structured_dataset['label'][i]['emotions']['SADNESS'])  # ok
+    structured_dataset['STIMULANT'].append(structured_dataset['label'][i]['stimulant'])  # ok
 
 
 
@@ -56,17 +57,22 @@ liking_list = structured_dataset['LIKING']
 fear_list = structured_dataset['FEAR']
 amusement_list = structured_dataset['AMUSEMENT']
 sadness_list = structured_dataset['SADNESS']
+stimulant_list = structured_dataset['STIMULANT']
 
 
 
-
-all_emotions = np.concatenate(([awe_list], [disgust_list], [surprise_list], [anger_list], [enthusiasm_list], [liking_list], [fear_list], [amusement_list], [sadness_list]))
+all_emotions = np.concatenate(([stimulant_list],[awe_list], [disgust_list], [surprise_list], [anger_list], [enthusiasm_list], [liking_list], [fear_list], [amusement_list], [sadness_list]))
 structured_emotions = all_emotions.transpose()
 
 # np.savetxt("valence_int.csv", valence_list_array, delimiter=",", fmt='%.i')
 # np.savetxt("awe.csv", awe_list, delimiter=",", fmt='%.i')
-# np.savetxt("all.csv", structured_emotions, delimiter=",", fmt='%.i')
 
-# structured_emotions['Max'] = structured_emotions.idxmax()
+# structured_emotions['Max'] = structured_emotions.idxmax(index=1)
 
-print('end')
+# np.savetxt("stimulats.csv", stimulant_list, delimiter=",")
+
+npp = np.array(stimulant_list)
+np.savetxt("stimulants.csv", npp, delimiter=",", newline="\n", fmt="%s")
+
+# print(stimulant_list)
+# print('end')
