@@ -64,6 +64,9 @@ f1_score=metrics.f1_score(y_true, y_pred, average='weighted')
 
 f1_score2=metrics.f1_score(y_true, y_pred, average='micro')
 
+f1_score3=metrics.f1_score(y_true, y_pred, average='macro')
+
+
 
 fbeta_score=metrics.fbeta_score(y_true, y_pred, average='macro', beta=0.7)
 

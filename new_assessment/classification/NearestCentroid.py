@@ -5,16 +5,16 @@ from sklearn.metrics import accuracy_score
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
-features_raw = pd.read_csv('nine_without.csv')
-valence_raw = pd.read_csv('nine_emotions.csv')
+features_raw = pd.read_csv('feautery_274.csv', header=None)
+valence_raw = pd.read_csv('emocje_274.csv', header=None)
 
 features = np.array(features_raw)
 valence = np.array(valence_raw)
 
-valence_train_rows = valence[30:299, :]
-train_rows = features[30:299, :]
-true_features = features[0:30, :]
-true_valence = valence[0:30, :]
+valence_train_rows = valence[32:, :]
+train_rows = features[32:, :]
+true_features = features[:32, :]
+true_valence = valence[:32, :]
 
 # clf = NearestCentroid()
 # knn = NearestCentroid()
@@ -34,4 +34,31 @@ from sklearn.metrics import confusion_matrix
 c = confusion_matrix(y_true, y_pred)
 from sklearn.metrics import hamming_loss
 d = hamming_loss(y_true, y_pred)
+
+from sklearn import metrics
+from sklearn.metrics import jaccard_score
+precision_score=metrics.precision_score(y_true, y_pred, average='macro')
+
+recall_score=metrics.recall_score(y_true, y_pred, average='micro')
+
+f1_score=metrics.f1_score(y_true, y_pred, average='weighted')
+
+f1_score2=metrics.f1_score(y_true, y_pred, average='micro')
+
+
+fbeta_score=metrics.fbeta_score(y_true, y_pred, average='macro', beta=0.7)
+
+precision_recall_fscore_support=metrics.precision_recall_fscore_support(y_true, y_pred, beta=0.5, average=None)
+
+print(y_pred)
+precision_score2=metrics.precision_score(y_true, y_pred, average='macro')
+
+recall_score2=metrics.recall_score(y_true, y_pred, average='micro')
+
+f1_score2=metrics.f1_score(y_true, y_pred, average='weighted')
+
+fbeta_score2=metrics.fbeta_score(y_true, y_pred, average='macro', beta=0.5)
+
+precision_recall_fscore_support2=metrics.precision_recall_fscore_support(y_true, y_pred, beta=0.5, average=None)
+
 print('end')
