@@ -2,7 +2,7 @@ import numpy
 from .embedded_sequence import embed_seq
 
 
-def ap_entropy(X, M, R):
+def ap_entropy(X, M, R) -> object:
     """Computer approximate entropy (ApEN) of series X, specified by M and R.
 
     Suppose given time series is X = [x(1), x(2), ... , x(N)]. We first build
