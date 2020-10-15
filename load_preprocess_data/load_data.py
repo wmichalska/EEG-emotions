@@ -9,7 +9,7 @@ import pickle
 structured_dataset = {'data': [], 'label': [], 'features': []}
 
 def prepare_data():
-    dataset_raw = load_dataset('study_data_windowed/study_data_windowed_muse_30_s.gzip.pkl')
+    dataset_raw = load_dataset('data.gzip.pkl')
 
     for n in range(22, 65):
         for m in range(0, 11):
