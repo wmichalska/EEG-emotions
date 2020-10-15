@@ -10,7 +10,7 @@ It gives possibility for:
 * create classifiers 
 * prepare plots (statistics and comparison of classifiers) 
 
-Some of files are hidden like psychological data from participants.
+Some of important files are hidden like psychological data from participants.
 
 ## About Master Thesis:
 ###### This work is connected to emotion recognition using wearables devices and EEG signals.
