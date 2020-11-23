@@ -27,8 +27,6 @@ The binary and multiclass classification (nine class) was carried out using vari
 For the analysis of the findings, error matrixes, and statistical charts were prepared, presenting the evaluation of participants' emotions for a given category of video. Their interpretation shows that viewed films did not evoke uniform emotions and often activated several of them simultaneously. 
 This thesis examines various research problems and investigates the different proceedings in the classification process.
 
-### Support or Contact
-
 Contact if you have questions.
 
 
